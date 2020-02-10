@@ -14,18 +14,20 @@ class ArrayUtils
      */
     public static function weave(array $arrays, $elementsPerArray = 1) : array {
         if (count($arrays) <= 1) {
-            return $arrays;
+            return $arrays[0];
         }
 
         $output = array_splice($arrays[0], 0, $elementsPerArray);
 
+        // Move first array to the end.
         $first = array_shift($arrays);
+        if (!empty($first)) {
+            $arrays[] = $first;
+        }
 
-        $arrays = empty($first)
-            ? $arrays
-            : array_push($arrays, $first);
+        array_push($output, ...self::weave($arrays, $elementsPerArray));
 
-        return array_push($output, self::weave($arrays, $elementsPerArray));
+        return $output;
     }
 
     /**
